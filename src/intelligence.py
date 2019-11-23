@@ -78,6 +78,9 @@ class Intelligence(object):
         model = model.predict(self.test_data) if desc[:3]=='SVM' else model
         print (desc)
         print ('-'*50)
+        print ('='*5+' Train/Test Split '+'='*5+'\n {:.2f}/{:.2f} %'\
+               .format(len(self.train_data)/(len(self.train_data)+len(self.test_data))*100, \
+                       len(self.test_data)/(len(self.train_data)+len(self.test_data))*100))
         print ('='*5+' Confusion Matrix '+'='*5+'\n', confusion_matrix(self.test_labels, model, [1,0]))
         print ('='*5+' Precision '+'='*5+'\n {:.2f}'.format(precision_score(self.test_labels, model, [1,0])*100))
         print ('='*5+' Recall '+'='*5+'\n {:.2f}'.format(recall_score(self.test_labels, model, [1,0])))
