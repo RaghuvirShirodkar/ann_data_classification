@@ -50,7 +50,38 @@ class DataManipulation(object):
         extracted_features = np.hstack((fit.transform(X), y.reshape(self.data_array.shape[0], 1)))
     
         return extracted_features 
-
+    
+    def align_dataset(self, other, update_other=False, debug=False):
+        '''
+            Align self to other dataframe, by appropriately fixing
+            missing terms.
+            :param:
+                other: DataManipulation object to be aligned to
+                update_other: Flag to update other, default False
+                debug: Enable debug print statements, default False
+            :returns:
+                None
+        '''
+        self_ = self.data['nm'].values
+        self_min, self_max = self_[0], self_[-1]
+        
+        other_ = other.data['nm'].values
+        other_min, other_max = other_[0], other_[-1]
+        
+        min_index = self_min if self_min > other_min else other_min
+        max_index = self_max if self_max < other_max else other_max
+        
+        self.data_array = self.data[self.data['nm'].isin(range(min_index, max_index+1, 10))]\
+                                    .values[:,1:].astype(dtype=float)
+        if update_other:
+            other.data_array = other.data[other.data['nm'].isin(range(min_index, max_index+1, 10))]\
+                                          .values[:,1:].astype(dtype=float)
+        
+        if debug:
+            print ("Self: ", self_min, self_max, self.data_array.shape)
+            print ("Other: ", other_min, other_max, other.data_array.shape)
+            print ("Min/max: ", min_index, max_index)
+        
     def cumulative_dataset(data_):
         '''
             Cumulate the data into one single data
